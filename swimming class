@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swimming School Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 10px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        form p {
+            margin: 10px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#students">Students</a></li>
+            <li><a href="#attendance">Attendance</a></li>
+            <li><a href="#progress">Progress</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <section id="home">
+            <h1>Welcome to the Swimming School Management System</h1>
+        </section>
+
+        <section id="students">
+            <h2>Students</h2>
+            <form id="student-form">
+                <p>Name: <input type="text" id="student-name" required></p>
+                <p>Age: <input type="number" id="student-age" required></p>
+                <p><input type="submit" value="Add Student"></p>
+            </form>
+            <ul id="student-list"></ul>
+        </section>
+
+        <section id="attendance">
+            <h2>Attendance</h2>
+            <form id="attendance-form">
+                <p>Student: 
+                    <select id="attendance-student" required></select>
+                </p>
+                <p>Date: <input type="date" id="attendance-date" required></p>
+                <p>Status: 
+                    <select id="attendance-status" required>
+                        <option value="present">Present</option>
+                        <option value="absent">Absent</option>
+                    </select>
+                </p>
+                <p><input type="submit" value="Add Attendance"></p>
+            </form>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="attendance-list"></tbody>
+            </table>
+        </section>
+
+        <section id="progress">
+            <h2>Progress</h2>
+            <form id="progress-form">
+                <p>Student: 
+                    <select id="progress-student" required></select>
+                </p>
+                <p>Progress: <input type="text" id="progress-text" required></p>
+                <p><input type="submit" value="Add Progress"></p>
+            </form>
+            <ul id="progress-list"></ul>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const studentForm = document.getElementById('student-form');
+            const attendanceForm = document.getElementById('attendance-form');
+            const progressForm = document.getElementById('progress-form');
+            const studentList = document.getElementById('student-list');
+            const attendanceList = document.getElementById('attendance-list');
+            const progressList = document.getElementById('progress-list');
+            const attendanceStudentSelect = document.getElementById('attendance-student');
+            const progressStudentSelect = document.getElementById('progress-student');
+
+            const students = [];
+            const attendanceRecords = [];
+            const progressRecords = [];
+
+            studentForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const name = document.getElementById('student-name').value;
+                const age = document.getElementById('student-age').value;
+
+                const student = { id: students.length + 1, name, age };
+                students.push(student);
+
+                const option1 = document.createElement('option');
+                option1.value = student.id;
+                option1.textContent = student.name;
+                attendanceStudentSelect.appendChild(option1);
+
+                const option2 = document.createElement('option');
+                option2.value = student.id;
+                option2.textContent = student.name;
+                progressStudentSelect.appendChild(option2);
+
+                const li = document.createElement('li');
+                li.textContent = `${student.name} (Age: ${student.age})`;
+                studentList.appendChild(li);
+
+                studentForm.reset();
+            });
+
+            attendanceForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const studentId = document.getElementById('attendance-student').value;
+                const date = document.getElementById('attendance-date').value;
+                const status = document.getElementById('attendance-status').value;
+
+                const attendance = { studentId, date, status };
+                attendanceRecords.push(attendance);
+
+                const student = students.find(s => s.id == studentId);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${student.name}</td><td>${date}</td><td>${status}</td>`;
+                attendanceList.appendChild(tr);
+
+                attendanceForm.reset();
+            });
+
+            progressForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const studentId = document.getElementById('progress-student').value;
+                const progressText = document.getElementById('progress-text').value;
+
+                const progress = { studentId, progressText };
+                progressRecords.push(progress);
+
+                const student = students.find(s => s.id == studentId);
+                const li = document.createElement('li');
+                li.textContent = `${student.name}: ${progressText}`;
+                progressList.appendChild(li);
+
+                progressForm.reset();
+            });
+        });
+    </script>
+</body>
+</html>
